@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+	nginx:
+		container_name: nginx
+		build: ./nginx/Dockerfile
+		ports:
+			- "4343:4343"
+		depends_on:
+			- django
+		networks:
+			- transcendence
+		env_file:
+			- ./.env
+		restart: always
+
+	django:
+		build:
+			dockerfile: ./django/Dockerfile
+		container_name: django
+		volumes:
+			- ./study:/app/backend
+		ports:
+			- "8000:8000"
+		env_file:
+			- .env
+		depends_on:
+			- db
+		networks:
+			- transcendence
+
+	postgres:
+		image: postgres:15
+		container_name: postgres
+		ports:
+			- "5432:5432"
+		networks:
+			- transcendence
+		env_file:
+			- ./.env
+		volumes:
+			- data:/var/lib/postgresql/data
+		restart: always
+
+
+volumes:
+	data:
+
+networks:
+	inception:
+	django-postgre:
